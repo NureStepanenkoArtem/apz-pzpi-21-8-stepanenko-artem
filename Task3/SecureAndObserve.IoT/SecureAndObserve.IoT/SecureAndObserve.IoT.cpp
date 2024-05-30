@@ -15,7 +15,7 @@
 
 using json = nlohmann::json;
 
-// Структура для хранения TypeOfService и SecurityLevel
+
 struct ServiceInfo {
     std::string typeOfService;
     std::string securityLevel;
@@ -68,7 +68,6 @@ void performGetRequest(const std::string& url, json& getData) {
         else {
             try {
                 getData = json::parse(readBuffer);
-                //std::cout << "GET Response JSON:\n" << getData.dump(4) << std::endl;
                 std::cout << "Get data success!\n" << std::endl;
             }
             catch (json::parse_error& e) {
@@ -217,12 +216,9 @@ std::vector<GuardReportInfo> getGuardReports(const std::string& url) {
         }
         else {
             try {
-                // Парсинг JSON-ответа
                 auto jsonResponse = json::parse(readBuffer);
-                //std::cout << "GET Response JSON:\n" << jsonResponse.dump(4) << std::endl;
 
                     for (const auto& report : jsonResponse) {
-                        // Проверка наличия и типов полей
                         GuardReportInfo info;
                         if (report.contains("date") ) {
                            
@@ -250,16 +246,14 @@ std::vector<GuardReportInfo> getGuardReports(const std::string& url) {
 }
 
 std::string getCurrentDateAsJsonString() {
-    // Получаем текущее время
+
     auto now = std::chrono::system_clock::now();
-    // Преобразуем время в строку в формате ISO 8601 (JSON)
     std::time_t now_c = std::chrono::system_clock::to_time_t(now);
     std::tm timeInfo;
-    localtime_s(&timeInfo, &now_c); // Безопасное преобразование времени
+    localtime_s(&timeInfo, &now_c); 
 
-    // Форматируем строку даты в формате JSON
     std::ostringstream oss;
-    oss << std::put_time(&timeInfo, "%FT%T"); // Формат даты и времени в формате JSON
+    oss << std::put_time(&timeInfo, "%FT%T"); 
     return oss.str();
 }
 
@@ -317,7 +311,6 @@ int main() {
     //
     getUrl = serverUrl + "/api/OrdersApi/";
     std::vector<Order> orders;
-    // Цикл для обработки каждого orderId
     for (const auto& orderId : orderIds) {
         std::string url = getUrl + orderId;
         ServiceInfo service = performGetRequest(url);
@@ -326,7 +319,6 @@ int main() {
         order.typeOfService = service.typeOfService;
         order.securityLevel = service.securityLevel;
         orders.push_back(order);
-        // Выводим информацию о TypeOfService и SecurityLevel
         std::cout << " " << orders.capacity() << ". TypeOfService: " << service.typeOfService << ", SecurityLevel: " << service.securityLevel << std::endl;
     }
     string choiceOrderNumber = "-1";
